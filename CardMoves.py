@@ -1,7 +1,38 @@
-from curses import COLOR_BLACK
+from enum import Enum
+from typing import Tuple
+
+class PieceColor(Enum):
+    RED = 1
+    BLUE = 2
+
+class Piece:
+    color : PieceColor = None
+    # location : Tuple = None
+    is_king : bool = False
+    is_empty : bool = False
+
+    def __init__(self, is_empty=False, color=None, is_king=False):
+        self.is_empty = is_empty
+        self.color = color
+        # self.location = location
+        self.is_king = is_king
+
+    def __str__(self):
+        if self.is_empty:
+            return ' '
+        elif self.color == PieceColor.RED:
+            return 'R' if self.is_king else 'r'
+        else:
+            return 'B' if self.is_king else 'b'
+
+    # def get_location(self):
+    #     return self.location
+
+    def get_color(self):
+        return self.color
 
 
-class GameCard():
+class GameCard:
     '''
     2 = current position
     1 = valid jumps/moves
@@ -16,24 +47,90 @@ class GameCard():
     moves: list = []
 
     def __init__(self, name, moves):
-        self.all_moves = moves
+        self.moves = moves
         self.name = name
 
-    def get_valid_moves(self, board_state):
-        return self.all_moves
+    def __str__(self):
+        return self.name
 
-OX = GameCard('ox', ['U', 'R', 'D'])
-HORSE = GameCard('horse', ['U', 'L', 'D'])
+    def get_moves(self, color, board_state):
+        return self.moves
+
+
+TIGER = GameCard('tiger', ['UU', 'D'])
 DRAGON = GameCard('dragon', ['URR', 'ULL', 'DR', 'DL'])
-COBRA = GameCard('cobra', ['L', 'UR', 'DR'])
-ROOSTER = GameCard('rooster', ['UR', 'R', 'DL', 'L'])
 FROG = GameCard('frog', ['UL', 'LL', 'DR'])
+RABBIT = GameCard('rabbit', ['DL', 'UR', 'RR'])
+
+CRAB = GameCard('crab', ['LL', 'RR', 'U'])
 ELEPHANT = GameCard('elephant', ['UR', 'UL', 'R', 'L'])
-MANTIS = GameCard('mantis', ['UL', 'UR', 'D'])
 GOOSE = GameCard('goose', ['UL', 'R', 'DR', 'L'])
-OTTER = GameCard('otter', [])
-PHOENIX = GameCard('phoenix', []) 
-TURTLE = GameCard('turtle', [])
-IGUANA = GameCard('iguana', [])
-SABLE = GameCard('sable', [])
-PANDA = GameCard('panda', [])
+ROOSTER = GameCard('rooster', ['UR', 'R', 'DL', 'L'])
+
+MONKEY = GameCard('monkey', ['UL', 'UR', 'DL', 'DR'])
+MANTIS = GameCard('mantis', ['UL', 'UR', 'D'])
+HORSE = GameCard('horse', ['U', 'L', 'D'])
+OX = GameCard('ox', ['U', 'R', 'D'])
+
+CRANE = GameCard('crane', ['U', 'DL', 'DR'])
+BOAR = GameCard('boar', ['R', 'U', 'L'])
+EEL = GameCard('eel', ['UL', 'DL', 'R'])
+COBRA = GameCard('cobra', ['L', 'UR', 'DR'])
+
+ALL_CARDS = [
+    TIGER, DRAGON, FROG, RABBIT, 
+    CRAB, ELEPHANT, GOOSE, ROOSTER,
+    MONKEY, MANTIS, HORSE, OX, 
+    CRANE, BOAR, EEL, COBRA
+]
+# Expansion pack cards
+# OTTER = GameCard('otter', [])
+# PHOENIX = GameCard('phoenix', []) 
+# TURTLE = GameCard('turtle', [])
+# IGUANA = GameCard('iguana', [])
+# SABLE = GameCard('sable', [])
+# PANDA = GameCard('panda', [])
+# BEAR = GameCard('bear', [])
+# FOX = GameCard('fox', [])
+# GIRAFFE = GameCard('giraffe', [])
+# KIRIN = GameCard('kirin', [])
+# RAT = GameCard('rat', [])
+# TANUKI = GameCard('tanuki', [])
+# MOUSE = GameCard('mouse', [])
+# VIPER = GameCard('viper', [])
+# SEASNAKE = GameCard('seasnake', [])
+# DOG = GameCard('dog', [])
+
+class Move:
+    cards : list = []
+    whose_move : PieceColor = None
+    board : list = []
+
+    def __init__(self, cards, whose_move, board):
+        self.cards = cards
+        self.whose_move = whose_move
+        self.board = board
+
+    # BLUE: UP = negative, RIGHT = positive
+    # RED: UP = positive, RIGHT = negative
+    def get_valid_moves(self):
+        valid_moves = []
+        for card in self.cards:
+            moves = card.get_moves()
+            for move in moves:
+
+
+        return valid_moves
+
+
+class Game:
+    board : list = []
+    whose_move : PieceColor = None
+    blue_cards : list = []
+    red_cards : list = []
+    middle_card : GameCard = None
+    move_history : list = []
+
+
+    def update_state():
+        return
