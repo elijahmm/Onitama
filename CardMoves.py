@@ -7,15 +7,17 @@ class PieceColor(Enum):
 
 class Piece:
     color : PieceColor = None
+    name : str = ''
     # location : Tuple = None
     is_king : bool = False
     is_empty : bool = False
 
-    def __init__(self, is_empty=False, color=None, is_king=False):
+    def __init__(self, is_empty=False, color=None, is_king=False, name=''):
         self.is_empty = is_empty
         self.color = color
         # self.location = location
         self.is_king = is_king
+        self.name = name
 
     def __str__(self):
         if self.is_empty:
@@ -30,6 +32,9 @@ class Piece:
 
     def get_color(self):
         return self.color
+
+    def get_valid_moves(self, cards, board):
+        return
 
 
 class GameCard:
@@ -118,12 +123,12 @@ class Move:
         for card in self.cards:
             moves = card.get_moves()
             for move in moves:
+                break
+
+        return None
 
 
-        return valid_moves
-
-
-class Game:
+class GameState:
     board : list = []
     whose_move : PieceColor = None
     blue_cards : list = []

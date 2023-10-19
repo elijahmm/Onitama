@@ -1,5 +1,45 @@
-from cardMoves import Piece, PieceColor, GameCard
+from cardMoves import GameCard
 import random
+from enum import Enum
+import numpy as np
+
+class PieceColor(Enum):
+    RED = 1
+    BLUE = 2
+
+class Piece:
+    color : PieceColor = None
+    name : str = ''
+    loc : tuple = ()
+    is_king : bool = False
+    is_empty : bool = False
+
+    def __init__(self, color, name, loc):
+        self.color = color
+        self.name = name
+        self.loc = loc
+
+    def __str__(self):
+        if self.color == PieceColor.RED:
+            return 'R' if self.is_king else 'r'
+        else:
+            return 'B' if self.is_king else 'b'
+
+    def get_loc(self):
+        return self.loc
+
+    def get_color(self):
+        return self.color
+
+    def is_king(self):
+        return 'king' in self.name
+
+    # BLUE: UP = negative, RIGHT = positive
+    # RED: UP = positive, RIGHT = negative
+    def get_valid_moves(self, cards, board):
+        for card in cards:
+            break
+        return
 
 
 def build_cards():
@@ -23,13 +63,12 @@ def build_cards():
     EEL = GameCard('eel', ['UL', 'DL', 'R'])
     COBRA = GameCard('cobra', ['L', 'UR', 'DR'])
 
-    ALL_CARDS = [
+    return [
         TIGER, DRAGON, FROG, RABBIT, 
         CRAB, ELEPHANT, GOOSE, ROOSTER,
         MONKEY, MANTIS, HORSE, OX, 
         CRANE, BOAR, EEL, COBRA
     ]
-    return ALL_CARDS
 
 def print_board(b):
     print('=====================')
@@ -37,7 +76,10 @@ def print_board(b):
 
         print_str = ''
         for col in range(5):
-            print_str += str(b[row][col]) + ' | '
+            if b[row][col] is None:
+                print_str += '  | '
+            else:
+                print_str += str(b[row][col]) + ' | '
         
         print(f'| {print_str}')
         if row != 4:
@@ -48,33 +90,35 @@ def print_board(b):
 
 # set up board
 def board_setup(): 
-    board = []
-    red_start = [
-        Piece(color=PieceColor.RED, is_king=False),
-        Piece(color=PieceColor.RED, is_king=False),
-        Piece(color=PieceColor.RED, is_king=True),
-        Piece(color=PieceColor.RED, is_king=False),
-        Piece(color=PieceColor.RED, is_king=False)
-    ]
-    blue_start = [
-        Piece(color=PieceColor.BLUE, is_king=False),
-        Piece(color=PieceColor.BLUE, is_king=False),
-        Piece(color=PieceColor.BLUE, is_king=True),
-        Piece(color=PieceColor.BLUE, is_king=False),
-        Piece(color=PieceColor.BLUE, is_king=False)
-    ]
-    board.append(red_start)
-    for _ in range(3):
-        row = []
-        for _ in range(5):
-            row.append(Piece(is_empty=True))
-        board.append(row)
-    board.append(blue_start)
+    piece_map = {}
+    for x in range(0,5):
+        if x == 2:
+            name = 'red_king'
+        else:
+            name = f'red_pawn_{x}'
+        piece_map[name] = Piece(color=PieceColor.RED, name=name, loc=(0,x))
 
-    return board
+    for x in range(0,5):
+        if x == 2:
+            name = 'blue_king'
+        else:
+            name = f'blue_pawn_{x}'
+        piece_map[name] = Piece(color=PieceColor.BLUE, name=name, loc=(4,x))
 
-board = board_setup()
+    board = np.empty((5,5), dtype=Piece)
+    # print(board)
+
+    for piece in piece_map.values():
+        x, y = piece.get_loc()
+        board[x][y] = piece
+    
+    return board, piece_map
+
+
+
+board, piece_map = board_setup()
 print_board(board)
+print(piece_map)
 
 # choose 5 random cards
 all_cards = build_cards()
